@@ -1,7 +1,6 @@
 package com.kayu.param;
 
 import com.kayu.result.OpenApiBaseResult;
-import org.codehaus.groovy.tools.shell.IO;
 
 /**
  * 参数
