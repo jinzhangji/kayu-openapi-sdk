@@ -17,8 +17,10 @@
     IBaseParam<R> param = ?(业务参数)                                   
     R result = openApiClient.execute(param)
     if(result.isSuccess()){
+        //成功
         System.out.println(JSON.toJSONString(result));
     }else{
+        //失败或错误
         System.out.println(String.format("status:%s - message:%s",result.getStatus(),result.getMessage()));
     }
     
