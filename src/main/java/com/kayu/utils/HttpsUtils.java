@@ -11,7 +11,7 @@ import java.security.cert.X509Certificate;
  */
 public class HttpsUtils {
 
-    private static HostnameVerifier verifier = (hostname,session) -> true;
+    private static HostnameVerifier verifier = (hostname, session) -> true;
     private static SSLSocketFactory socketFactory;
 
     static {
@@ -36,11 +36,12 @@ public class HttpsUtils {
 
     /**
      * 获取https连接
+     *
      * @param url
      * @return
      * @throws Exception
      */
-    public static HttpsURLConnection getHttpsConnection(URL url) throws Exception{
+    public static HttpsURLConnection getHttpsConnection(URL url) throws Exception {
         HttpsURLConnection connHttps = (HttpsURLConnection) url.openConnection();
         connHttps.setHostnameVerifier(verifier);
         connHttps.setSSLSocketFactory(socketFactory);
@@ -62,7 +63,7 @@ public class HttpsUtils {
         }
     }
 
-    public static void defaultSSLSocketFactory(){
+    public static void defaultSSLSocketFactory() {
         HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
     }
 

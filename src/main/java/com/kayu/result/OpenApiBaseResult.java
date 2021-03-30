@@ -24,7 +24,7 @@ public class OpenApiBaseResult {
         this.message = message;
     }
 
-    public boolean isSuccess(){
+    public boolean isSuccess() {
         return this.status == 1;
     }
 

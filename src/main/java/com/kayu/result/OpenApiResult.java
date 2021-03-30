@@ -1,12 +1,12 @@
 package com.kayu.result;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.StringUtils;
+import com.kayu.utils.StringUtils;
 
 /**
  * Created by Jin.Z.J  2021/3/11
  */
-public class OpenApiResult extends OpenApiBaseResult{
+public class OpenApiResult extends OpenApiBaseResult {
 
     private String data;
 
@@ -18,18 +18,18 @@ public class OpenApiResult extends OpenApiBaseResult{
         this.data = data;
     }
 
-    public <T extends OpenApiBaseResult> T getData(Class<T> clazz){
-        if(StringUtils.isBlank(this.data)){
-            try{
+    public <T extends OpenApiBaseResult> T getData(Class<T> clazz) {
+        if (StringUtils.isEmpty(this.data)) {
+            try {
                 T result = clazz.newInstance();
                 result.setStatus(this.getStatus());
                 result.setMessage(this.getMessage());
                 return result;
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        T result = JSON.parseObject(this.data,clazz);
+        T result = JSON.parseObject(this.data, clazz);
         result.setStatus(this.getStatus());
         result.setMessage(this.getMessage());
         return result;

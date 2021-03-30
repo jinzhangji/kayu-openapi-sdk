@@ -1,16 +1,15 @@
 package com.kayu.param;
 
 
-import cn.hutool.core.util.IdUtil;
 import com.kayu.constant.RequestMethod;
 import com.kayu.constant.Version;
 import com.kayu.result.CreditCardApplyResult;
-
+import com.kayu.utils.IdUtils;
 
 /**
  * Created by Jin.Z.J  2021/3/11
  */
-public class CreditCardApplyParam implements IBaseParam<CreditCardApplyResult>{
+public class CreditCardApplyParam implements IBaseParam<CreditCardApplyResult> {
 
     private static final String PATH = "/api/merchant/apply";
     private String username; //用户名
@@ -61,7 +60,7 @@ public class CreditCardApplyParam implements IBaseParam<CreditCardApplyResult>{
 
     @Override
     public String requestId() {
-        return IdUtil.simpleUUID();
+        return IdUtils.uuid32();
     }
 
     @Override

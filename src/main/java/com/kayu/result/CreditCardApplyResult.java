@@ -4,7 +4,7 @@ package com.kayu.result;
 /**
  * Created by Jin.Z.J  2021/3/11
  */
-public class CreditCardApplyResult extends OpenApiBaseResult{
+public class CreditCardApplyResult extends OpenApiBaseResult {
 
     private String orderId;
     private String url;
