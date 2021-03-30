@@ -7,7 +7,6 @@ import com.kayu.utils.StringUtils;
 
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +17,7 @@ public class URIBuilder {
     private static final String UTF_8 = "UTF-8";
 
     private String uri;
-    private Map<String, Object> map = new HashMap<>();
+    private Map<String, Object> map = MapUtils.newHashMap();
 
     public URIBuilder(String uri) {
         this.uri = uri;
@@ -42,7 +41,7 @@ public class URIBuilder {
         if (!MapUtils.isEmpty(map)) {
             map.forEach(this.map::put);
         }
-        return null;
+        return this;
     }
 
 

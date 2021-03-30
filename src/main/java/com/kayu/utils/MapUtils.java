@@ -35,7 +35,7 @@ public class MapUtils {
         if (map instanceof TreeMap) {
             return map;
         }
-        TreeMap<String, T> treeMap = new TreeMap<>(comparator);
+        TreeMap<String, T> treeMap = newTreeMap(comparator);
         treeMap.putAll(map);
         return treeMap;
     }
@@ -96,19 +96,60 @@ public class MapUtils {
         return builder.substring(1, builder.length());
     }
 
-
+    /**
+     * 是否为空|无元素
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
     public static <K, V> boolean isEmpty(Map<K, V> map) {
         return map == null || map.isEmpty();
     }
 
 
+    /**
+     * 是否不为空
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
     public static <K, V> boolean isNotEmpty(Map<K, V> map) {
         return !isEmpty(map);
     }
 
 
-    public static <K, V> Map<K, V> newHashMap() {
+    /**
+     * 创建 HashMap
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<>();
+    }
+
+
+    /**
+     * 创建 TreeMap
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static <K,V> TreeMap<K,V> newTreeMap(){
+        return newTreeMap(null);
+    }
+
+    /**
+     * 创建 TreeMap
+     * @param comparator
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static <K,V> TreeMap<K,V> newTreeMap(Comparator<K> comparator){
+        return new TreeMap<>(comparator);
     }
 
 

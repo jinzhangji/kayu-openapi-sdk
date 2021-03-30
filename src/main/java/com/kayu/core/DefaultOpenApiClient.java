@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -67,7 +66,7 @@ public class DefaultOpenApiClient implements OpenApiClient {
         map.put("merchantNo", this.merchantNo);
         map.put("sign", SignUtils.sign(map, this.md5Key));
         //统一设置请求头
-        Map<String, String> header = new HashMap<>();
+        Map<String, String> header = MapUtils.newHashMap();
         header.put("User-Agent", String.format("open-sdk-java(version=%s)", param.version()));
         header.put("request-id", param.requestId());
         Response res;
@@ -158,6 +157,9 @@ public class DefaultOpenApiClient implements OpenApiClient {
             String charset = getResponseCharset(connection.getContentType());
             if (code > 300 && code < 400) {
                 String location = connection.getHeaderField("Location");
+                if(logger.isDebugEnabled()){
+                    logger.debug("KY_SDK_BEGIN --> redirect:{}",location);
+                }
                 return this.doGet(location, null, null);
             } else if (code >= 200 && code < 300) {
                 String contentEncoding = connection.getHeaderField("Content-Encoding");

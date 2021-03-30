@@ -1,7 +1,8 @@
 package com.kayu.utils;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public class SignUtils {
         }
         String stringA = MapUtils.sortJoin(source, "&", "=", true);
         String stringB = new StringBuilder(stringA).append("&token=").append(md5Key).toString();
-        return DigestUtils.md5Hex(stringB).toUpperCase();
+        return md5(stringB).toUpperCase();
     }
 
     /**
@@ -37,6 +38,40 @@ public class SignUtils {
     public static boolean verify(String sign, Map<String, Object> source, String md5Key) {
         String localSign = sign(source, md5Key);
         return localSign.equals(sign);
+    }
+
+
+    /**
+     * md5加密
+     * @param str
+     * @return
+     */
+    public static String md5(String str){
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = md.digest(str.getBytes(Charset.forName("utf-8")));
+            return bytes2HexString(bytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+
+
+    /*
+     * 字节数组转16进制字符串
+     */
+    public static String bytes2HexString(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(bytes[i] & 0xFF);
+            if (hex.length() == 1) {
+                builder.append('0').append(hex);
+            }else{
+                builder.append(hex);
+            }
+        }
+        return builder.toString();
     }
 
 
