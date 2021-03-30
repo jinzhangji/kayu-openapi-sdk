@@ -18,7 +18,7 @@ public class SignUtils {
      * @return
      */
     public static String sign(Map<String, Object> source, String md5Key) {
-        if (source == null || source.isEmpty()) {
+        if (MapUtils.isEmpty(source)) {
             throw new IllegalArgumentException("source can not be empty");
         }
         source.remove("sign");
