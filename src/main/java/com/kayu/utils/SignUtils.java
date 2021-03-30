@@ -21,7 +21,6 @@ public class SignUtils {
         if (MapUtils.isEmpty(source)) {
             throw new IllegalArgumentException("source can not be empty");
         }
-        source.remove("sign");
         String stringA = MapUtils.sortJoin(source, "&", "=", true);
         String stringB = new StringBuilder(stringA).append("&token=").append(md5Key).toString();
         return DigestUtils.md5Hex(stringB).toUpperCase();
