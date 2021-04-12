@@ -35,11 +35,14 @@ public class DefaultOpenApiClient implements OpenApiClient {
     private String host;
     private String md5Key;
     private String merchantNo;
+    private int timeout;
 
-    private DefaultOpenApiClient(String host, String merchantNo, String md5Key) {
+
+    protected DefaultOpenApiClient(String host, String merchantNo, String md5Key,int timeout) {
         this.host = host;
         this.md5Key = md5Key;
         this.merchantNo = merchantNo;
+        this.timeout = timeout;
     }
 
     @Override
@@ -62,7 +65,6 @@ public class DefaultOpenApiClient implements OpenApiClient {
             Object val = BeanUtils.invoke(param, p.getter());
             map.put(key, val);
         });
-
         map.put("merchantNo", this.merchantNo);
         map.put("sign", SignUtils.sign(map, this.md5Key));
         //统一设置请求头
@@ -84,6 +86,7 @@ public class DefaultOpenApiClient implements OpenApiClient {
             throw new OpenApiException(String.format("KY_SDK_ERROR -> http状态码:%s,响应错误信息:%s", statusCode, res.getResult()));
         }
     }
+
 
 
     /**
@@ -140,6 +143,22 @@ public class DefaultOpenApiClient implements OpenApiClient {
         } catch (Exception e) {
             throw new OpenApiException(e);
         }
+    }
+
+    private HttpURLConnection getConnection(URL url, String method) throws Exception {
+        HttpURLConnection conn;
+        if ("https".equals(url.getProtocol())) {
+            conn = HttpsUtils.getHttpsConnection(url);
+        } else {
+            conn = (HttpURLConnection) url.openConnection();
+        }
+        conn.setRequestMethod(method);
+        conn.setConnectTimeout(this.timeout);
+        conn.setReadTimeout(this.timeout);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setInstanceFollowRedirects(true);
+        return conn;
     }
 
 
@@ -250,21 +269,7 @@ public class DefaultOpenApiClient implements OpenApiClient {
     }
 
 
-    private HttpURLConnection getConnection(URL url, String method) throws Exception {
-        HttpURLConnection conn;
-        if ("https".equals(url.getProtocol())) {
-            conn = HttpsUtils.getHttpsConnection(url);
-        } else {
-            conn = (HttpURLConnection) url.openConnection();
-        }
-        conn.setRequestMethod(method);
-        conn.setConnectTimeout(30000);
-        conn.setReadTimeout(30000);
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setInstanceFollowRedirects(true);
-        return conn;
-    }
+
 
 
     public static class Builder {
@@ -272,6 +277,7 @@ public class DefaultOpenApiClient implements OpenApiClient {
         private String merchantNo;
         private String host;
         private String md5key;
+        private int timeout = 30000;
 
 
         public Builder merchantNo(String merchantNo) {
@@ -295,8 +301,14 @@ public class DefaultOpenApiClient implements OpenApiClient {
             return this;
         }
 
+
+        public Builder timeout(int second){
+            this.timeout = second * 1000;
+            return this;
+        }
+
         public OpenApiClient build() {
-            return new DefaultOpenApiClient(host, merchantNo, md5key);
+            return new DefaultOpenApiClient(host, merchantNo, md5key,this.timeout);
         }
 
     }

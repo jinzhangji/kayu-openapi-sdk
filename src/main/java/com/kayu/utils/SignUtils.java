@@ -1,5 +1,7 @@
 package com.kayu.utils;
 
+import com.kayu.param.IObject;
+
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +11,21 @@ import java.util.Map;
  * Created by Jin.Z.J  2021/3/29
  */
 public class SignUtils {
+
+
+    /**
+     * 生成签名
+     * @param data 数据源
+     * @param md5Key 签名秘钥
+     * @return
+     */
+    public static <T extends IObject> String sign(T data,String md5Key){
+        if(data == null){
+            throw new NullPointerException("data can not be null");
+        }
+        Map<String,Object> map = BeanUtils.beanToMap(data);
+        return sign(map,md5Key);
+    }
 
 
     /**
@@ -26,6 +43,9 @@ public class SignUtils {
         String stringB = new StringBuilder(stringA).append("&token=").append(md5Key).toString();
         return md5(stringB).toUpperCase();
     }
+
+
+
 
     /**
      * 验签
