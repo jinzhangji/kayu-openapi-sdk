@@ -58,8 +58,11 @@ public class SbuxCouponSDKTest {
     @Test
     public void sbuxCreateOrder(){
         SbuxCouponOrderCreateParam sbuxCouponOrderCreateParam = new SbuxCouponOrderCreateParam();
+        //三方订单号
         sbuxCouponOrderCreateParam.setOutOrderNo(IdUtils.uuid32());
+        //产品id
         sbuxCouponOrderCreateParam.setProductId(1L);
+        //数量
         sbuxCouponOrderCreateParam.setQuantity(1);
         try {
             SbuxCouponOrderCreateResult result = openApiClient.execute(sbuxCouponOrderCreateParam);
