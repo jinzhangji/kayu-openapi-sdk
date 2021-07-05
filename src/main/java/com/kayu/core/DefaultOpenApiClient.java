@@ -7,7 +7,6 @@ import com.kayu.constant.RequestMethod;
 import com.kayu.exception.OpenApiException;
 import com.kayu.param.IBaseParam;
 import com.kayu.result.OpenApiBaseResult;
-import com.kayu.result.OpenApiResult;
 import com.kayu.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,8 +78,7 @@ public class DefaultOpenApiClient implements OpenApiClient {
         }
         int statusCode = res.getStatusCode();
         if (res.getStatusCode() == 200) {
-            OpenApiResult apiResult = JSON.parseObject(res.getResult(), OpenApiResult.class);
-            return apiResult.getData(param.resClass());
+            return JsonConvert.parse(res.getResult()).convert(param.resClass());
         } else {
             logger.error("KY_SDK_ERROR -> http状态码:{},响应错误信息:{}", statusCode, res.getResult());
             throw new OpenApiException(String.format("KY_SDK_ERROR -> http状态码:%s,响应错误信息:%s", statusCode, res.getResult()));
