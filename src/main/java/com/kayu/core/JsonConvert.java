@@ -67,11 +67,7 @@ public class JsonConvert extends OpenApiBaseResult implements Convert{
                         if (genericType instanceof ParameterizedType) {
                             ParameterizedType parameterizedType = (ParameterizedType) genericType;
                             String className = parameterizedType.getActualTypeArguments()[0].getTypeName();
-                            Class<?> dataClass = classMapCache.get(className);
-                            if(dataClass == null){
-                                dataClass = Class.forName(parameterizedType.getActualTypeArguments()[0].getTypeName());
-                                classMapCache.put(className,dataClass);
-                            }
+                            Class<?> dataClass = classMapCache.putIfAbsent(className,Class.forName(className));
                             val = JSON.parseArray(this.data,dataClass);
                         }
                     }
