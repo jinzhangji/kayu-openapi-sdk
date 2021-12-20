@@ -20,6 +20,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -31,13 +34,15 @@ public class DefaultOpenApiClient implements OpenApiClient {
 
     private static final String UTF_8 = "UTF-8";
 
+    private static ExecutorService threadPool;
+
     private String host;
     private String md5Key;
     private String merchantNo;
     private int timeout;
 
 
-    protected DefaultOpenApiClient(String host, String merchantNo, String md5Key,int timeout) {
+    protected DefaultOpenApiClient(String host, String merchantNo, String md5Key, int timeout) {
         this.host = host;
         this.md5Key = md5Key;
         this.merchantNo = merchantNo;
@@ -46,10 +51,14 @@ public class DefaultOpenApiClient implements OpenApiClient {
 
     @Override
     public <T extends OpenApiBaseResult> T execute(IBaseParam<T> param) throws OpenApiException {
+        boolean verifyFlag = param.verifyParam();
+        if (!verifyFlag) {
+            throw new OpenApiException("参数有误,请检查参数!");
+        }
         //url
         String url = this.host + param.requestURI();
         if (logger.isDebugEnabled()) {
-            logger.debug("KY_SDK_BEGIN -> requestURI: {}", param.requestURI());
+            logger.debug("ky-sdk-begin: -> requestURI: {}", param.requestURI());
         }
         //解析参数
         Map<String, Object> map = MapUtils.newHashMap();
@@ -69,7 +78,9 @@ public class DefaultOpenApiClient implements OpenApiClient {
         //统一设置请求头
         Map<String, String> header = MapUtils.newHashMap();
         header.put("User-Agent", String.format("open-sdk-java(version=%s)", param.version()));
-        header.put("request-id", param.requestId());
+        String requestId = param.requestId();
+        header.put("request-id", requestId);
+        logger.debug("ky-sdk-debug: request-id:{}, sdk-version{}", requestId, param.version());
         Response res;
         if (param.reqMethod().equals(RequestMethod.POST)) {
             res = doPost(url, map, header);
@@ -78,13 +89,43 @@ public class DefaultOpenApiClient implements OpenApiClient {
         }
         int statusCode = res.getStatusCode();
         if (res.getStatusCode() == 200) {
-            return JsonConvert.parse(res.getResult()).convert(param.resClass());
+            return JSON.parseObject(res.getResult(), param.resClass());
         } else {
-            logger.error("KY_SDK_ERROR -> http状态码:{},响应错误信息:{}", statusCode, res.getResult());
-            throw new OpenApiException(String.format("KY_SDK_ERROR -> http状态码:%s,响应错误信息:%s", statusCode, res.getResult()));
+            logger.error("ky-sdk-error: http statusCode:{},响应错误信息:{}", statusCode, res.getResult());
+            throw new OpenApiException(String.format("ky-sdk-error: http statusCode:%s,响应错误信息:%s", statusCode, res.getResult()));
         }
     }
 
+
+    @Override
+    public <T extends OpenApiBaseResult> Future<T> asyncExecute(IBaseParam<T> param) {
+        return getThreadPool().submit(() -> this.execute(param));
+    }
+
+
+    /**
+     * 获取线程池
+     *
+     * @return
+     */
+    private ExecutorService getThreadPool() {
+        if (threadPool == null) {
+            //lock monitor by Class
+            synchronized (this.getClass()) {
+                if (threadPool == null) {
+                    threadPool = Executors.newCachedThreadPool();
+                }
+            }
+        }
+        return threadPool;
+    }
+
+
+    public static void shutdown() {
+        if (threadPool != null && !threadPool.isShutdown()) {
+            threadPool.shutdown();
+        }
+    }
 
 
     /**
@@ -174,8 +215,8 @@ public class DefaultOpenApiClient implements OpenApiClient {
             String charset = getResponseCharset(connection.getContentType());
             if (code > 300 && code < 400) {
                 String location = connection.getHeaderField("Location");
-                if(logger.isDebugEnabled()){
-                    logger.debug("KY_SDK_BEGIN --> redirect:{}",location);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("KY_SDK_BEGIN --> redirect:{}", location);
                 }
                 return this.doGet(location, null, null);
             } else if (code >= 200 && code < 300) {
@@ -267,16 +308,12 @@ public class DefaultOpenApiClient implements OpenApiClient {
     }
 
 
-
-
-
     public static class Builder {
 
         private String merchantNo;
         private String host;
         private String md5key;
         private int timeout = 30000;
-
 
         public Builder merchantNo(String merchantNo) {
             this.merchantNo = merchantNo;
@@ -300,13 +337,19 @@ public class DefaultOpenApiClient implements OpenApiClient {
         }
 
 
-        public Builder timeout(int second){
+        public Builder timeout(int second) {
             this.timeout = second * 1000;
             return this;
         }
 
+        public Builder threadPool(ExecutorService pool) {
+            DefaultOpenApiClient.threadPool = pool;
+            return this;
+        }
+
+
         public OpenApiClient build() {
-            return new DefaultOpenApiClient(host, merchantNo, md5key,this.timeout);
+            return new DefaultOpenApiClient(host, merchantNo, md5key, this.timeout);
         }
 
     }

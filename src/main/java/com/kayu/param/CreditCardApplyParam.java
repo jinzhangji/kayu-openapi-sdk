@@ -82,4 +82,9 @@ public class CreditCardApplyParam implements IBaseParam<CreditCardApplyResult> {
     public String reqMethod() {
         return RequestMethod.POST;
     }
+
+    @Override
+    public boolean verifyParam() {
+        return true;
+    }
 }

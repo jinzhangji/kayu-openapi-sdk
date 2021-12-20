@@ -1,6 +1,7 @@
 package com.kayu.result;
 
 /**
+ * 返回结果
  * Created by Jin.Z.J  2021/3/11
  */
 public class OpenApiBaseResult {
