@@ -78,7 +78,11 @@ public class PbrCreateOrderParam implements IBaseParam<PbrOrderResult> {
 
     @Override
     public boolean verifyParam() {
-        boolean p1 = StringUtils.isAnyEmpty(this.account, this.outOrderNo);
-        return !(p1 && (StringUtils.isAnyEmpty(this.proCode) && amount == null) && categoryId == null);
+        boolean r1 = StringUtils.isAnyEmpty(this.account, this.outOrderNo);
+        boolean r2 = StringUtils.isEmpty(this.proCode);
+        if (r2) {
+            r2 = this.amount == null || this.categoryId == null;
+        }
+        return !(r1 || r2);
     }
 }
