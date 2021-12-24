@@ -31,12 +31,14 @@ public class PbrSdkTest {
     public void rechargeTest(){
 
         PbrCreateOrderParam orderParam = new PbrCreateOrderParam();
+        //Example 1
+//        orderParam.setProCode("00005");
+        //Example 2
         orderParam.setOutOrderNo(IdUtils.uuid32());
-        orderParam.setAccount("13777777777");
-        //orderParam.setProCode("");
+        orderParam.setAccount("13717699999");
         orderParam.setAmount(BigDecimal.valueOf(100));
-        orderParam.setCategoryId(4L);
-        orderParam.setNotifyUrl("http://www.example.com/api/ebr/callback");
+        orderParam.setCategoryId(1L);
+        orderParam.setNotifyUrl("http://www.example.com/api/pbr/callback");
         try {
             PbrOrderResult result = openApiClient.execute(orderParam);
             if(result.isSuccess()){
@@ -44,7 +46,7 @@ public class PbrSdkTest {
             }
             System.out.println(JSON.toJSONString(result));
         } catch (OpenApiException e) {
-
+            SdkConsole.error(e.getMessage());
         }
 
     }
