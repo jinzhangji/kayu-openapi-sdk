@@ -58,7 +58,7 @@ public class GasSdkTest {
     public void gasQueryListTest() {
         GasQueryListParam queryListParam = new GasQueryListParam();
         queryListParam.setOilNo(92);
-        queryListParam.setDistance(100.);
+        queryListParam.setDistance(100);
         queryListParam.setUniqueId("3");
         queryListParam.setLatitude(39.916527);
         queryListParam.setLongitude(116.397128);

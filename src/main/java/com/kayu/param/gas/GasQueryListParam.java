@@ -21,7 +21,7 @@ public class GasQueryListParam implements IBaseParam<GasQueryListResult> {
     /**
      * 距离内筛选
      */
-    private Double distance;
+    private Integer distance;
 
     /**
      * 0 价格有限 1:距离优先

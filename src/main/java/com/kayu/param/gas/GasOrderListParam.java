@@ -26,9 +26,9 @@ public class GasOrderListParam implements IBaseParam<GasOrderListResult> {
      */
     private Date endTime;
     /**
-     * 订单状态 否(1, "已支付")，(4, "退款申请中")，(5, "已退款")，(6, "退款失败")
+     * 订单状态 1:已支付、 3:已退款、4:退款中、5:退款失败
      */
-    private Integer status;
+    private Integer state;
     /**
      * 订单号 否
      */
