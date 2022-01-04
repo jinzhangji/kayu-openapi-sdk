@@ -135,20 +135,18 @@ public class GasSdkTest {
 
 
 
-
-
     /**
-     * 查询订单
+     * 查询用户订单列表(用于实时展示用户订单)
      */
     @Test
-    public void gasQueryOrderListTest() {
+    public void queryUserOrderListTest() {
 
-        GasOrderListParam listParam = new GasOrderListParam();
-        listParam.setUniqueId("6");
+        GasUserOrderListParam listParam = new GasUserOrderListParam();
+        listParam.setUniqueId("2");
         listParam.setAppType("oa");
         listParam.setPageNow(1);
         listParam.setPageSize(100);
-        GasOrderListResult rsp;
+        GasUserOrderListResult rsp;
         try {
             rsp = openApiClient.execute(listParam);
         } catch (OpenApiException e) {
@@ -162,6 +160,39 @@ public class GasSdkTest {
         log("响应结果", JSON.toJSONString(rsp));
 
     }
+
+    /**
+     * 查询订单列表(系统)
+     */
+    @Test
+    public void queryOrderListTest() {
+
+        GasOrderListParam listParam = new GasOrderListParam();
+        listParam.setPageNow(1);
+        listParam.setPageSize(20);
+        listParam.setStartTime("2021-01-04 00:00:00");
+        listParam.setEndTime("2022-01-04 00:00:00");
+        listParam.setOrderId("HL0000356302112171QUV01");
+        listParam.setUniqueId("2");
+        listParam.setState(3);
+        GasOrderListResult rsp;
+        try {
+            rsp = openApiClient.execute(listParam);
+        } catch (OpenApiException e) {
+            log("请求异常", e.getMessage());
+            return;
+        }
+        if (!rsp.isSuccess()) {
+            log("api请求失败", rsp.getMessage());
+            return;
+        }
+//        log("响应结果", JSON.toJSONString(rsp));
+
+    }
+
+
+
+
 
 
     private void log(String title, String message) {

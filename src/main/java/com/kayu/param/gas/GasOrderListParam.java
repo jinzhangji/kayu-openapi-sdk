@@ -3,56 +3,38 @@ package com.kayu.param.gas;
 import com.kayu.constant.RequestMethod;
 import com.kayu.constant.Version;
 import com.kayu.param.IBaseParam;
+import com.kayu.param.PageParam;
 import com.kayu.result.gas.GasOrderListResult;
 import com.kayu.utils.IdUtils;
-import com.kayu.utils.StringUtils;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
- * 加油订单列表参数
- * Created by Jin.Z.J  2021/12/16
+ * Created by Jin.Z.J  2022/1/4
  */
 @Data
-public class GasOrderListParam implements IBaseParam<GasOrderListResult> {
+public class GasOrderListParam extends PageParam implements IBaseParam<GasOrderListResult> {
 
     /**
-     * 支付开始时间 否 时间格式 2017-09-27 00:00:00
+     * 开始时间  时间格式 2017-09-27 00:00:00
      */
-    private Date startTime;
+    private String startTime;
     /**
-     * 支付结束时间 否 时间格式 2017-09-27 00:00:00
+     * 结束时间 时间格式 2017-09-27 00:00:00
      */
-    private Date endTime;
+    private String endTime;
     /**
-     * 订单状态 1:已支付、 3:已退款、4:退款中、5:退款失败
+     * 订单状态 0:未支付、1:已支付、2:已取消 3:已退款、4:退款中、5:退款失败
      */
     private Integer state;
     /**
-     * 订单号 否
+     * 订单号
      */
     private String orderId;
 
     /**
-     * 用户唯一id必须
+     * 用户唯一id
      */
     private String uniqueId;
-
-    /**
-     * 应用类型 app | oa
-     */
-    private String appType;
-
-    /**
-     * 分页页码
-     */
-    private Integer pageNow;
-
-    /**
-     * 页码条数
-     */
-    private Integer pageSize;
 
 
     @Override
@@ -83,6 +65,6 @@ public class GasOrderListParam implements IBaseParam<GasOrderListResult> {
 
     @Override
     public boolean verifyParam() {
-        return !StringUtils.isAnyEmpty(this.uniqueId, this.appType);
+        return !(super.getPageNow() == null);
     }
 }

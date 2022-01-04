@@ -1,25 +1,27 @@
 package com.kayu.result.gas;
 
 import com.kayu.result.OpenApiBaseResult;
-import com.kayu.result.PageData;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 加油系统订单列表
- * Created by Jin.Z.J  2022/1/4
+ * 用户加油订单列表
+ * Created by Jin.Z.J  2021/12/16
  */
 @Data
-public class GasOrderListResult extends OpenApiBaseResult {
+public class GasUserOrderListResult extends OpenApiBaseResult {
+
+    private List<RspData> data;
 
 
-    private PageData<RspData> data;
+
 
 
     @Data
-    public static class RspData{
+    public static final class RspData {
 
 
         /**
@@ -99,20 +101,9 @@ public class GasOrderListResult extends OpenApiBaseResult {
 
 
         /**
-         * 用户唯一id
+         * 创建时间
          */
-        private String uniqueId;
-
-        /**
-         * 渠道 0:团油 1:滴滴
-         */
-        private Integer channel;
-
-        /**
-         * 商户佣金
-         */
-        private BigDecimal merCommissionPrice;
-
+        private Date createTime;
 
         /**
          * 支付时间
@@ -124,15 +115,7 @@ public class GasOrderListResult extends OpenApiBaseResult {
          */
         private Date refundTime;
 
-        /**
-         * 创建时间
-         */
-        private Date createTime;
 
-        /**
-         * 修改时间
-         */
-        private Date modifyTime;
     }
 
 }
