@@ -59,6 +59,14 @@ public class EbrOrderRechargeParam implements IBaseParam<EbrOrderResult>{
      */
     private String provider;
 
+
+    /**
+     * 证件号码-南网必填
+     */
+    private String idNo;
+
+
+
     @Override
     public String requestId() {
         return IdUtils.uuid32();
